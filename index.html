@@ -2,8 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, 
-initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Hand Gesture Whiteboard</title>
   <style>
     :root{
@@ -24,10 +23,9 @@ initial-scale=1" />
       overflow:hidden;
       user-select:none;
       -webkit-tap-highlight-color: transparent;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe 
-UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft 
-YaHei",sans-serif;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
     }
+
     .app{
       height:100vh;
       display:grid;
@@ -38,12 +36,13 @@ YaHei",sans-serif;
     }
     .left,.right{ min-width:260px; max-width:380px; }
     .center{ min-width:520px; }
+
     @media (max-width: 980px){
       body{ overflow:auto; }
       .app{ height:auto; grid-template-columns: 1fr; }
-      .left,.right,.center{ min-width:auto; max
-width:none; }
+      .left,.right,.center{ min-width:auto; max-width:none; }
     }
+
     .box{
       border-radius:14px;
       background:rgba(255,255,255,0.06);
@@ -54,10 +53,8 @@ width:none; }
       flex-direction:column;
       gap:10px;
     }
-    .boxTitle{ font-size:13px; color:rgba(255,255,255,0.85); 
-margin:0; }
-    .help{ font-size:12.5px; color:var(--mut); line
-height:1.6; margin:0; white-space:pre-wrap; }
+    .boxTitle{ font-size:13px; color:rgba(255,255,255,0.85); margin:0; }
+    .help{ font-size:12.5px; color:var(--mut); line-height:1.6; margin:0; white-space:pre-wrap; }
     .draftArea{
       flex:1;
       border-radius:12px;
@@ -134,6 +131,7 @@ height:1.6; margin:0; white-space:pre-wrap; }
       backdrop-filter:blur(4px);
     }
     .overlay.active{ display:block; }
+
     .center{
       height:100%;
       display:flex;
@@ -150,8 +148,8 @@ height:1.6; margin:0; white-space:pre-wrap; }
       overflow:hidden;
       box-shadow:0 0 0 1px rgba(255,255,255,0.08) inset;
     }
-    .panel canvas{ position:absolute; inset:0; width:100%; 
-height:100%; display:block; }
+    .panel canvas{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+
     .statusbar{
       width:100%;
       display:flex;
@@ -173,8 +171,8 @@ height:100%; display:block; }
       color:var(--fg);
       white-space:nowrap;
     }
-    .row{ display:flex; gap:10px; flex-wrap:wrap; align
-items:center; }
+
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
     .btn{
       padding:8px 12px;
       border-radius:10px;
@@ -186,9 +184,9 @@ items:center; }
       user-select:none;
     }
     .btn:hover{ background:rgba(255,255,255,0.14); }
-    .btn.on{ background:rgba(255,255,255,0.18); border
-color:var(--bd3); }
+    .btn.on{ background:rgba(255,255,255,0.18); border-color:var(--bd3); }
     .btn:disabled{ opacity:0.45; cursor:not-allowed; }
+
     .ctl{
       display:flex;
       align-items:center;
@@ -199,9 +197,9 @@ color:var(--bd3); }
       background:var(--card);
       border:1px solid var(--bd);
     }
-    .ctl label{ font-size:13px; 
-color:rgba(255,255,255,0.85); width:56px; }
+    .ctl label{ font-size:13px; color:rgba(255,255,255,0.85); width:56px; }
     input[type="range"]{ flex:1; }
+
     .pickerWrap{
       width:100%;
       display:flex;
@@ -234,14 +232,10 @@ color:rgba(255,255,255,0.85); width:56px; }
       font-size:13px;
       color:#eee;
     }
-    #svCanvas{ display:block; width:100%; height:170px; 
-border-radius:10px; border:1px solid rgba(255,255,255,0.12); 
-cursor:crosshair; }
-    #hCanvas{ display:block; width:100%; height:18px; 
-border-radius:999px; border:1px solid 
-rgba(255,255,255,0.12); cursor:pointer; }
-    .pickerHint{ font-size:12px; 
-color:rgba(255,255,255,0.65); margin:0; }
+    #svCanvas{ display:block; width:100%; height:170px; border-radius:10px; border:1px solid rgba(255,255,255,0.12); cursor:crosshair; }
+    #hCanvas{ display:block; width:100%; height:18px; border-radius:999px; border:1px solid rgba(255,255,255,0.12); cursor:pointer; }
+    .pickerHint{ font-size:12px; color:rgba(255,255,255,0.65); margin:0; }
+
     select{
       padding:8px 10px;
       border-radius:8px;
@@ -257,39 +251,27 @@ color:rgba(255,255,255,0.65); margin:0; }
 </head>
 <body>
   <div class="overlay" id="overlay"></div>
+
   <div class="app">
     <div class="left">
       <div class="box">
         <p class="boxTitle">Instructions</p>
-        <p class="help">Writing: Both hands, control hand in 
-fist, other hand writes; Pen tip = midpoint of writing hand 
-(8,12); Simple smoothing with debounce + resampling + 
-quadratic curves.
-Pause: While writing, extend control hand index finger to 
-pause (no line drawn), white pen tip still visible.
-Undo: While paused, extend index + middle finger 
-simultaneously to undo (max 10 steps, edge trigger + 
-cooldown).
-Anti-conflict: Pause to write (index→fist) has short wait 
-window.
-Eraser: Single hand index + middle finger extended, center = 
-index tip (8), adjustable radius.
-Export: Select region to export PNG (white/black 
-background), selection mode pauses gestures.</p>
+        <p class="help">Writing: Both hands, control hand in fist, other hand writes; Pen tip = midpoint of writing hand (8,12); Simple smoothing with debounce + resampling + quadratic curves.
+Pause: While writing, extend control hand index finger to pause (no line drawn), white pen tip still visible.
+Undo: While paused, extend index + middle finger simultaneously to undo (max 10 steps, edge trigger + cooldown).
+Anti-conflict: Pause to write (index→fist) has short wait window.
+Eraser: Single hand index + middle finger extended, center = index tip (8), adjustable radius.
+Export: Select region to export PNG (white/black background), selection mode pauses gestures.</p>
         <div class="draftArea" id="draftArea">
           <div class="draftHeader">
-            <span class="draftTitle">Draft Area (Auto
-save)</span>
-            <button class="expandBtn" 
-id="expandBtn">Expand</button>
+            <span class="draftTitle">Draft Area (Auto-save)</span>
+            <button class="expandBtn" id="expandBtn">Expand</button>
           </div>
-          <textarea class="draftTextarea" id="draftTextarea" 
-placeholder="Enter notes, ideas or draft content 
-here...&#10;Content is automatically saved locally"></
-textarea>
+          <textarea class="draftTextarea" id="draftTextarea" placeholder="Enter notes, ideas or draft content here...&#10;Content is automatically saved locally"></textarea>
         </div>
       </div>
     </div>
+
     <div class="center">
       <div class="panel" id="panel">
         <canvas id="viewCanvas"></canvas>
@@ -298,197 +280,172 @@ textarea>
         <canvas id="uiCanvas"></canvas>
       </div>
       <div class="statusbar">
-        <span class="badge" id="state">Status: 
-Initializing...</span>
+        <span class="badge" id="state">Status: Initializing...</span>
         <span class="badge" id="sel">Selection: --</span>
       </div>
     </div>
+
     <div class="right">
       <div class="box">
         <p class="boxTitle">Color / Pen Width / Export</p>
+
         <div class="pickerWrap">
           <div class="pickerTop">
-            <span style="font
-size:13px;color:rgba(255,255,255,0.85);">Color</span>
+            <span style="font-size:13px;color:rgba(255,255,255,0.85);">Color</span>
             <div class="swatch" id="swatch"></div>
-            <span class="hexBadge" id="colText">#30d158</
-span>
+            <span class="hexBadge" id="colText">#30d158</span>
           </div>
-          <canvas id="svCanvas" width="640" height="340"></
-canvas>
-canvas>
-          <canvas id="hCanvas" width="640" height="36"></
-          <p class="pickerHint">Tip: Top for brightness/
-saturation, bottom for hue</p>
+          <canvas id="svCanvas" width="640" height="340"></canvas>
+          <canvas id="hCanvas" width="640" height="36"></canvas>
+          <p class="pickerHint">Tip: Top for brightness/saturation, bottom for hue</p>
         </div>
+
         <div class="row">
-          <button class="btn" id="cBlack" type="button" 
-data-col="#000000">Black</button>
-          <button class="btn" id="cWhite" type="button" 
-data-col="#ffffff">White</button>
-          <button class="btn" id="cRed" type="button" data
-col="#ff3b30">Red</button>
-          <button class="btn" id="cYellow" type="button" 
-data-col="#ffd60a">Yellow</button>
-          <button class="btn" id="cBlue" type="button" data
-col="#0a84ff">Blue</button>
-          <button class="btn" id="cGreen" type="button" 
-data-col="#30d158">Green</button>
+          <button class="btn" id="cBlack" type="button" data-col="#000000">Black</button>
+          <button class="btn" id="cWhite" type="button" data-col="#ffffff">White</button>
+          <button class="btn" id="cRed" type="button" data-col="#ff3b30">Red</button>
+          <button class="btn" id="cYellow" type="button" data-col="#ffd60a">Yellow</button>
+          <button class="btn" id="cBlue" type="button" data-col="#0a84ff">Blue</button>
+          <button class="btn" id="cGreen" type="button" data-col="#30d158">Green</button>
         </div>
+
         <div class="ctl">
           <label>Pen</label>
-          <input id="penRange" type="range" min="1" max="30" 
-step="0.5" value="2.5" />
+          <input id="penRange" type="range" min="1" max="30" step="0.5" value="2.5" />
           <span class="badge" id="penVal">2.5</span>
         </div>
+
         <div class="ctl">
           <label>Eraser</label>
-          <input id="eraserRange" type="range" min="6" 
-max="80" step="1" value="26" />
+          <input id="eraserRange" type="range" min="6" max="80" step="1" value="26" />
           <span class="badge" id="eraserVal">26</span>
         </div>
+
         <div class="row">
-          <button class="btn" id="clearBtn" 
-type="button">Clear</button>
-          <button class="btn on" id="mirrorBtn" 
-type="button">Mirror: On</button>
-          <button class="btn on" id="skeletonBtn" 
-type="button">Skeleton: Show</button>
+          <button class="btn" id="clearBtn" type="button">Clear</button>
+          <button class="btn on" id="mirrorBtn" type="button">Mirror: On</button>
+          <button class="btn on" id="skeletonBtn" type="button">Skeleton: Show</button>
         </div>
+
         <div class="row">
-          <button class="btn" id="selectBtn" 
-type="button">Select Region</button>
-          <button class="btn" id="bgWhiteBtn" 
-type="button">BG: White</button>
-          <button class="btn" id="bgBlackBtn" 
-type="button">BG: Black</button>
+          <button class="btn" id="selectBtn" type="button">Select Region</button>
+          <button class="btn" id="bgWhiteBtn" type="button">BG: White</button>
+          <button class="btn" id="bgBlackBtn" type="button">BG: Black</button>
         </div>
+
         <div class="row">
-          <button class="btn" id="exportBtn" type="button" 
-disabled>Export PNG</button>
-          <button class="btn" id="cancelSelectBtn" 
-type="button" disabled>Cancel</button>
+          <button class="btn" id="exportBtn" type="button" disabled>Export PNG</button>
+          <button class="btn" id="cancelSelectBtn" type="button" disabled>Cancel</button>
         </div>
-        <p class="boxTitle" style="margin-top:10px;">Text 
-Tool</p>
+
+        <p class="boxTitle" style="margin-top:10px;">Text Tool</p>
+
         <div class="row">
-          <button class="btn" id="addTextBtn" 
-type="button">Add Text</button>
+          <button class="btn" id="addTextBtn" type="button">Add Text</button>
         </div>
+
         <div class="ctl">
           <label>Size</label>
-          <input id="fontSizeRange" type="range" min="12" 
-max="72" step="2" value="32" />
+          <input id="fontSizeRange" type="range" min="12" max="72" step="2" value="32" />
           <span class="badge" id="fontSizeVal">32</span>
         </div>
+
         <div class="row">
-          <button class="btn" id="tBlack" type="button" 
-data-col="#000000">Black</button>
-          <button class="btn" id="tWhite" type="button" 
-data-col="#ffffff">White</button>
-          <button class="btn on" id="tRed" type="button" 
-data-col="#ff3b30">Red</button>
-          <button class="btn" id="tYellow" type="button" 
-data-col="#ffd60a">Yellow</button>
-          <button class="btn" id="tBlue" type="button" data
-col="#0a84ff">Blue</button>
-          <button class="btn" id="tGreen" type="button" 
-data-col="#30d158">Green</button>
+          <button class="btn" id="tBlack" type="button" data-col="#000000">Black</button>
+          <button class="btn" id="tWhite" type="button" data-col="#ffffff">White</button>
+          <button class="btn on" id="tRed" type="button" data-col="#ff3b30">Red</button>
+          <button class="btn" id="tYellow" type="button" data-col="#ffd60a">Yellow</button>
+          <button class="btn" id="tBlue" type="button" data-col="#0a84ff">Blue</button>
+          <button class="btn" id="tGreen" type="button" data-col="#30d158">Green</button>
         </div>
+
         <div class="ctl">
           <label>Font</label>
           <select id="fontSelect">
-            <option value="PingFang SC, Microsoft YaHei, 
-sans-serif">Chinese (Heiti)</option>
-            <option value="Arial, Helvetica, sans
-serif">English (Arial)</option>
-            <option value="Roboto, sans-serif">English 
-(Roboto)</option>
+            <option value="PingFang SC, Microsoft YaHei, sans-serif">Chinese (Heiti)</option>
+            <option value="Arial, Helvetica, sans-serif">English (Arial)</option>
+            <option value="Roboto, sans-serif">English (Roboto)</option>
           </select>
         </div>
       </div>
     </div>
   </div>
-  <video id="video" playsinline style="display:none;"></
-video>
+
+  <video id="video" playsinline style="display:none;"></video>
+
   <script type="module">
     const panel = document.getElementById("panel");
-    const viewCanvas = 
-document.getElementById("viewCanvas");
-    const drawCanvas = 
-document.getElementById("drawCanvas");
-    const textCanvas = 
-document.getElementById("textCanvas");
+    const viewCanvas = document.getElementById("viewCanvas");
+    const drawCanvas = document.getElementById("drawCanvas");
+    const textCanvas = document.getElementById("textCanvas");
     const uiCanvas = document.getElementById("uiCanvas");
     const vctx = viewCanvas.getContext("2d");
     const dctx = drawCanvas.getContext("2d");
     const tctx = textCanvas.getContext("2d");
     const uctx = uiCanvas.getContext("2d");
     const video = document.getElementById("video");
+
     const stateEl = document.getElementById("state");
     const selEl = document.getElementById("sel");
+
     const clearBtn = document.getElementById("clearBtn");
     const mirrorBtn = document.getElementById("mirrorBtn");
-    const skeletonBtn = 
-document.getElementById("skeletonBtn");
+    const skeletonBtn = document.getElementById("skeletonBtn");
+
     const penRange = document.getElementById("penRange");
     const penVal = document.getElementById("penVal");
-    const eraserRange = 
-document.getElementById("eraserRange");
+
+    const eraserRange = document.getElementById("eraserRange");
     const eraserVal = document.getElementById("eraserVal");
+
     const colText = document.getElementById("colText");
     const swatch = document.getElementById("swatch");
-    const colorBtns = 
-["cBlack","cWhite","cRed","cYellow","cBlue","cGreen"].map(id 
-=> document.getElementById(id));
+    const colorBtns = ["cBlack","cWhite","cRed","cYellow","cBlue","cGreen"].map(id => document.getElementById(id));
+
     const selectBtn = document.getElementById("selectBtn");
-    const bgWhiteBtn = 
-document.getElementById("bgWhiteBtn");
-    const bgBlackBtn = 
-document.getElementById("bgBlackBtn");
+    const bgWhiteBtn = document.getElementById("bgWhiteBtn");
+    const bgBlackBtn = document.getElementById("bgBlackBtn");
     const exportBtn = document.getElementById("exportBtn");
-    const cancelSelectBtn = 
-document.getElementById("cancelSelectBtn");
+    const cancelSelectBtn = document.getElementById("cancelSelectBtn");
+
     const svCanvas = document.getElementById("svCanvas");
     const hCanvas = document.getElementById("hCanvas");
     const svctx = svCanvas.getContext("2d");
     const hctx = hCanvas.getContext("2d");
-    const addTextBtn = 
-document.getElementById("addTextBtn");
-    const fontSizeRange = 
-document.getElementById("fontSizeRange");
-    const fontSizeVal = 
-document.getElementById("fontSizeVal");
-    const fontSelect = 
-document.getElementById("fontSelect");
-    const textColorBtns = 
-["tBlack","tWhite","tRed","tYellow","tBlue","tGreen"].map(id 
-=> document.getElementById(id));
+
+    const addTextBtn = document.getElementById("addTextBtn");
+    const fontSizeRange = document.getElementById("fontSizeRange");
+    const fontSizeVal = document.getElementById("fontSizeVal");
+    const fontSelect = document.getElementById("fontSelect");
+    const textColorBtns = ["tBlack","tWhite","tRed","tYellow","tBlue","tGreen"].map(id => document.getElementById(id));
+
     const draftArea = document.getElementById("draftArea");
-    const draftTextarea = 
-document.getElementById("draftTextarea");
+    const draftTextarea = document.getElementById("draftTextarea");
     const expandBtn = document.getElementById("expandBtn");
     const overlay = document.getElementById("overlay");
+
     const DRAFT_STORAGE_KEY = "hand_whiteboard_draft";
     let isDraftExpanded = false;
+
     function loadDraft(){
       try{
-        const saved = 
-localStorage.getItem(DRAFT_STORAGE_KEY);
+        const saved = localStorage.getItem(DRAFT_STORAGE_KEY);
         if(saved) draftTextarea.value = saved;
       }catch(e){
         console.warn("Cannot load draft:", e);
       }
     }
+
     function saveDraft(){
       try{
-        localStorage.setItem(DRAFT_STORAGE_KEY, 
-draftTextarea.value);
+        localStorage.setItem(DRAFT_STORAGE_KEY, draftTextarea.value);
       }catch(e){
         console.warn("Cannot save draft:", e);
       }
     }
+
     draftTextarea.addEventListener("input", saveDraft);
+
     expandBtn.addEventListener("click", ()=>{
       isDraftExpanded = !isDraftExpanded;
       if(isDraftExpanded){
@@ -502,6 +459,7 @@ draftTextarea.value);
         expandBtn.textContent = "Expand";
       }
     });
+
     overlay.addEventListener("click", ()=>{
       if(isDraftExpanded){
         isDraftExpanded = false;
@@ -510,79 +468,81 @@ draftTextarea.value);
         expandBtn.textContent = "Expand";
       }
     });
-    function setState(t){ stateEl.textContent = "Status: " + 
-t; }
-    function setSel(t){ selEl.textContent = "Selection: " + 
-t; }
+
+    function setState(t){ stateEl.textContent = "Status: " + t; }
+    function setSel(t){ selEl.textContent = "Selection: " + t; }
+
     let stream=null, rafId=null;
-    let vision=null, FilesetResolver=null, 
-HandLandmarker=null;
+    let vision=null, FilesetResolver=null, HandLandmarker=null;
     let handLandmarker=null;
+
     const DPR = Math.max(1, window.devicePixelRatio || 1);
+
     let mirrorOn = true;
     let skeletonOn = true;
+
     mirrorBtn.addEventListener("click", ()=>{
       mirrorOn = !mirrorOn;
-      mirrorBtn.textContent = mirrorOn ? "Mirror: On" : 
-"Mirror: Off";
+      mirrorBtn.textContent = mirrorOn ? "Mirror: On" : "Mirror: Off";
       mirrorBtn.classList.toggle("on", mirrorOn);
       resetStroke();
     });
+
     skeletonBtn.addEventListener("click", ()=>{
       skeletonOn = !skeletonOn;
-      skeletonBtn.textContent = skeletonOn ? "Skeleton: 
-Show" : "Skeleton: Hide";
+      skeletonBtn.textContent = skeletonOn ? "Skeleton: Show" : "Skeleton: Hide";
       skeletonBtn.classList.toggle("on", skeletonOn);
     });
+
     const HOLD_MS = 420;
     const INTERP_STEP = 2.0;
     const DEBOUNCE_PX = 3.5;
     const SMOOTH_FACTOR = 0.25;
+
     let eraserR = Number(eraserRange.value);
+
     const MAX_UNDO = 10;
     const UNDO_COOLDOWN_MS = 350;
     let lastUndoTs = -Infinity;
     const undoStack = [];
+
     let selecting=false;
     let bgColor="#ffffff";
     let sel=null;
     let drag=null;
-    const CTRL = { WRITING:"WRITING", PAUSED:"PAUSED", 
-RESUME_DELAY:"RESUME_DELAY", IDLE:"IDLE" };
+
+    const CTRL = { WRITING:"WRITING", PAUSED:"PAUSED", RESUME_DELAY:"RESUME_DELAY", IDLE:"IDLE" };
     const RESUME_DELAY_MS = 110;
     let ctrlMode = CTRL.IDLE;
     let resumeStartTs = -Infinity;
-    let writingSession = { active:false, 
-controlLabel:null };
+
+    let writingSession = { active:false, controlLabel:null };
     let prevCtrlGesture = "none";
-    // 
-⽂字相关
+
+    // 文字相关
     let textMode = false;
     let textFontSize = 32;
     let textColor = "#ff3b30";
-    let textFont = "PingFang SC, Microsoft YaHei, sans
-serif";
+    let textFont = "PingFang SC, Microsoft YaHei, sans-serif";
     const textBoxes = [];
     let textBoxDrag = null;
     let selectedTextBox = null;
     let movingTextBox = null;
     let moveOffset = null;
+
     function resizeCanvasesToPanel(){
       const rect = panel.getBoundingClientRect();
       const W = Math.max(2, Math.round(rect.width * DPR));
       const H = Math.max(2, Math.round(rect.height * DPR));
-      if(viewCanvas.width!==W || viewCanvas.height!==H)
-{ viewCanvas.width=W; viewCanvas.height=H; }
-      if(drawCanvas.width!==W || drawCanvas.height!==H)
-{ drawCanvas.width=W; drawCanvas.height=H; }
-      if(textCanvas.width!==W || textCanvas.height!==H)
-{ textCanvas.width=W; textCanvas.height=H; }
-      if(uiCanvas.width!==W || uiCanvas.height!==H)
-{ uiCanvas.width=W; uiCanvas.height=H; }
+      if(viewCanvas.width!==W || viewCanvas.height!==H){ viewCanvas.width=W; viewCanvas.height=H; }
+      if(drawCanvas.width!==W || drawCanvas.height!==H){ drawCanvas.width=W; drawCanvas.height=H; }
+      if(textCanvas.width!==W || textCanvas.height!==H){ textCanvas.width=W; textCanvas.height=H; }
+      if(uiCanvas.width!==W || uiCanvas.height!==H){ uiCanvas.width=W; uiCanvas.height=H; }
       renderAllTexts();
     }
-    function clamp(v,a,b){ return Math.max(a, Math.min(b, 
-v)); }
+
+    function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+
     function calcCoverTransform(srcW, srcH, dstW, dstH){
       const s = Math.max(dstW/srcW, dstH/srcH);
       const dw = srcW * s;
@@ -591,24 +551,27 @@ v)); }
       const dy = (dstH - dh) * 0.5;
       return { s, dx, dy, dw, dh };
     }
+
     function landmarkToCanvas(pt, videoW, videoH, tf){
       const vx = (mirrorOn ? (1 - pt.x) : pt.x) * videoW;
       const vy = pt.y * videoH;
       return { x: vx * tf.s + tf.dx, y: vy * tf.s + tf.dy };
     }
+
     let prevPt=null;
     let prevMid=null;
     let lastSeenTs=0;
     let smoothedPt=null;
+    
     function resetStroke(){ 
       prevPt=null; 
       prevMid=null; 
       smoothedPt=null;
     }
+
     function pushUndoSnapshot(){
       try{
-        const img = 
-dctx.getImageData(0,0,drawCanvas.width,drawCanvas.height);
+        const img = dctx.getImageData(0,0,drawCanvas.width,drawCanvas.height);
         undoStack.push(img);
         if(undoStack.length>MAX_UNDO) undoStack.shift();
       }catch(e){}
@@ -619,6 +582,7 @@ dctx.getImageData(0,0,drawCanvas.width,drawCanvas.height);
       dctx.putImageData(img,0,0);
       resetStroke();
     }
+
     function strokeStyle(width,color){
       dctx.save();
       dctx.globalCompositeOperation="source-over";
@@ -627,44 +591,45 @@ dctx.getImageData(0,0,drawCanvas.width,drawCanvas.height);
       dctx.lineCap="round";
       dctx.lineJoin="round";
     }
+
     function addStrokePoint(p, width, color){
       if(!smoothedPt){
         smoothedPt = {x:p.x, y:p.y};
       }else{
-        smoothedPt.x = smoothedPt.x + (p.x - smoothedPt.x) * 
-SMOOTH_FACTOR;
-        smoothedPt.y = smoothedPt.y + (p.y - smoothedPt.y) * 
-SMOOTH_FACTOR;
+        smoothedPt.x = smoothedPt.x + (p.x - smoothedPt.x) * SMOOTH_FACTOR;
+        smoothedPt.y = smoothedPt.y + (p.y - smoothedPt.y) * SMOOTH_FACTOR;
       }
+      
       if(!prevPt){
         pushUndoSnapshot();
         prevPt = {x:smoothedPt.x, y:smoothedPt.y};
         prevMid = {x:smoothedPt.x, y:smoothedPt.y};
         return;
       }
-      const mid = { x:(prevPt.x+smoothedPt.x)*0.5, y:
-(prevPt.y+smoothedPt.y)*0.5 };
+      
+      const mid = { x:(prevPt.x+smoothedPt.x)*0.5, y:(prevPt.y+smoothedPt.y)*0.5 };
+
       strokeStyle(width,color);
       dctx.beginPath();
       dctx.moveTo(prevMid.x, prevMid.y);
-      dctx.quadraticCurveTo(prevPt.x, prevPt.y, mid.x, 
-mid.y);
+      dctx.quadraticCurveTo(prevPt.x, prevPt.y, mid.x, mid.y);
       dctx.stroke();
       dctx.restore();
+
       prevPt = {x:smoothedPt.x, y:smoothedPt.y};
       prevMid = mid;
     }
-    function addStrokePointResampled(from, to, width, color)
-{
+
+    function addStrokePointResampled(from, to, width, color){
       const dx=to.x-from.x, dy=to.y-from.y;
       const dist=Math.hypot(dx,dy);
       const n=Math.max(1, Math.floor(dist/INTERP_STEP));
       for(let i=1;i<=n;i++){
         const t=i/n;
-        addStrokePoint({x:from.x+dx*t, y:from.y+dy*t}, 
-width, color);
+        addStrokePoint({x:from.x+dx*t, y:from.y+dy*t}, width, color);
       }
     }
+
     function eraseAt(pt){
       dctx.save();
       dctx.globalCompositeOperation="destination-out";
@@ -673,9 +638,9 @@ width, color);
       dctx.fill();
       dctx.restore();
     }
+
     function fingerExtended(lm,mcp,pip,tip){
-      return (lm[tip].y < lm[pip].y) && (lm[tip].y < 
-lm[mcp].y);
+      return (lm[tip].y < lm[pip].y) && (lm[tip].y < lm[mcp].y);
     }
     function isFist(lm){
       const index = fingerExtended(lm,5,6,8);
@@ -704,35 +669,31 @@ lm[mcp].y);
       if(isIndexOnly(lm)) return "index";
       return "other";
     }
+
     function getHandLabel(result, i){
-      const hs = result.handednesses || result.handedness || 
-null;
-null;
-      const item = hs && hs[i] && hs[i][0] ? hs[i][0] : 
-      return item ? (item.categoryName || item.displayName 
-|| null) : null;
+      const hs = result.handednesses || result.handedness || null;
+      const item = hs && hs[i] && hs[i][0] ? hs[i][0] : null;
+      return item ? (item.categoryName || item.displayName || null) : null;
     }
+
     function pickControlIndex(handInfo){
-      if(writingSession.active && 
-writingSession.controlLabel){
-        const idx = handInfo.findIndex(h => h.label === 
-writingSession.controlLabel);
-      }
+      if(writingSession.active && writingSession.controlLabel){
+        const idx = handInfo.findIndex(h => h.label === writingSession.controlLabel);
         if(idx !== -1) return idx;
+      }
       let idx = handInfo.findIndex(h => isFist(h.lm));
       if(idx !== -1) return idx;
-      idx = handInfo.findIndex(h => isIndexOnly(h.lm) || 
-isIndexMiddleOnly(h.lm));
+      idx = handInfo.findIndex(h => isIndexOnly(h.lm) || isIndexMiddleOnly(h.lm));
       if(idx !== -1) return idx;
       return 0;
     }
+
     let penW = Number(penRange.value);
     let penColor = "#30d158";
+
     function setBgButtons(){
-      bgWhiteBtn.classList.toggle("on", 
-bgColor==="#ffffff");
-      bgBlackBtn.classList.toggle("on", 
-bgColor==="#000000");
+      bgWhiteBtn.classList.toggle("on", bgColor==="#ffffff");
+      bgBlackBtn.classList.toggle("on", bgColor==="#000000");
     }
     function syncSelText(){
       penVal.textContent = penW.toFixed(1);
@@ -740,25 +701,17 @@ bgColor==="#000000");
       colText.textContent = penColor.toLowerCase();
       swatch.style.background = penColor;
       fontSizeVal.textContent = String(textFontSize);
-      setSel(`Pen ${penW.toFixed(1)} | Eraser $
-{Math.round(eraserR)} | Color ${penColor.toLowerCase()} | BG 
-${bgColor==="#ffffff"?"White":"Black"} | Mirror $
-{mirrorOn?"On":"Off"} | Select ${selecting?"On":"Off"} | 
-Text ${textMode?"On":"Off"}`);
+      setSel(`Pen ${penW.toFixed(1)} | Eraser ${Math.round(eraserR)} | Color ${penColor.toLowerCase()} | BG ${bgColor==="#ffffff"?"White":"Black"} | Mirror ${mirrorOn?"On":"Off"} | Select ${selecting?"On":"Off"} | Text ${textMode?"On":"Off"}`);
     }
-    penRange.addEventListener("input", ()=>{ penW = 
-Number(penRange.value); syncSelText(); });
-    eraserRange.addEventListener("input", ()=>{ eraserR = 
-Number(eraserRange.value); syncSelText(); });
-    fontSizeRange.addEventListener("input", 
-()=>{ textFontSize = Number(fontSizeRange.value); 
-syncSelText(); });
-    fontSelect.addEventListener("change", ()=>{ textFont = 
-fontSelect.value; });
+
+    penRange.addEventListener("input", ()=>{ penW = Number(penRange.value); syncSelText(); });
+    eraserRange.addEventListener("input", ()=>{ eraserR = Number(eraserRange.value); syncSelText(); });
+    fontSizeRange.addEventListener("input", ()=>{ textFontSize = Number(fontSizeRange.value); syncSelText(); });
+    fontSelect.addEventListener("change", ()=>{ textFont = fontSelect.value; });
+
     function setActiveColorBtn(hex){
       for(const b of colorBtns){
-        b.classList.toggle("on", 
-(b.dataset.col||"").toLowerCase()===hex.toLowerCase());
+        b.classList.toggle("on", (b.dataset.col||"").toLowerCase()===hex.toLowerCase());
       }
     }
     for(const b of colorBtns){
@@ -771,10 +724,10 @@ fontSelect.value; });
         renderHue(); renderSV(); syncSelText();
       });
     }
+
     function setActiveTextColorBtn(hex){
       for(const b of textColorBtns){
-        b.classList.toggle("on", 
-(b.dataset.col||"").toLowerCase()===hex.toLowerCase());
+        b.classList.toggle("on", (b.dataset.col||"").toLowerCase()===hex.toLowerCase());
       }
     }
     for(const b of textColorBtns){
@@ -783,12 +736,11 @@ fontSelect.value; });
         setActiveTextColorBtn(textColor);
       });
     }
+
     function getCanvasPointFromMouseEvent(ev){
       const rect = uiCanvas.getBoundingClientRect();
-      const x = (ev.clientX-rect.left) * (uiCanvas.width/
-rect.width);
-      const y = (ev.clientY-rect.top) * (uiCanvas.height/
-rect.height);
+      const x = (ev.clientX-rect.left) * (uiCanvas.width/rect.width);
+      const y = (ev.clientY-rect.top) * (uiCanvas.height/rect.height);
       return {x,y};
     }
     function normalizeSel(s){
@@ -796,8 +748,7 @@ rect.height);
       const x0=Math.min(s.x0,s.x1), y0=Math.min(s.y0,s.y1);
       const x1=Math.max(s.x0,s.x1), y1=Math.max(s.y0,s.y1);
       const W=uiCanvas.width, H=uiCanvas.height;
-      return { x0:clamp(x0,0,W), y0:clamp(y0,0,H), 
-x1:clamp(x1,0,W), y1:clamp(y1,0,H) };
+      return { x0:clamp(x0,0,W), y0:clamp(y0,0,H), x1:clamp(x1,0,W), y1:clamp(y1,0,H) };
     }
     function renderSelectUI(){
       const W=uiCanvas.width, H=uiCanvas.height;
@@ -811,8 +762,7 @@ x1:clamp(x1,0,W), y1:clamp(y1,0,H) };
       uctx.clearRect(s.x0,s.y0,s.x1-s.x0,s.y1-s.y0);
       uctx.strokeStyle="rgba(255,255,255,0.85)";
       uctx.lineWidth=2;
-      uctx.strokeRect(s.x0+1,s.y0+1,(s.x1-s.x0)-2,(s.y1
-s.y0)-2);
+      uctx.strokeRect(s.x0+1,s.y0+1,(s.x1-s.x0)-2,(s.y1-s.y0)-2);
       uctx.restore();
     }
     function enterSelectMode(){
@@ -832,12 +782,12 @@ s.y0)-2);
       renderSelectUI();
       syncSelText();
     }
-    selectBtn.addEventListener("click", ()=>{ selecting?
-exitSelectMode():enterSelectMode(); });
-    cancelSelectBtn.addEventListener("click", 
-()=>exitSelectMode());
+    selectBtn.addEventListener("click", ()=>{ selecting?exitSelectMode():enterSelectMode(); });
+    cancelSelectBtn.addEventListener("click", ()=>exitSelectMode());
+
     uiCanvas.addEventListener("mousedown", (ev)=>{
       const p=getCanvasPointFromMouseEvent(ev);
+      
       if(movingTextBox){
         const w = movingTextBox.x1 - movingTextBox.x0;
         const h = movingTextBox.y1 - movingTextBox.y0;
@@ -851,19 +801,21 @@ exitSelectMode():enterSelectMode(); });
         setState("Text box moved");
         return;
       }
+      
       if(textMode){
         for(let i = textBoxes.length - 1; i >= 0; i--){
           const box = textBoxes[i];
-          if(p.x >= box.x0 && p.x <= box.x1 && p.y >= box.y0 
-&& p.y <= box.y1){
+          if(p.x >= box.x0 && p.x <= box.x1 && p.y >= box.y0 && p.y <= box.y1){
             showTextBoxDialog(box);
             return;
           }
         }
+        
         textBoxDrag = {x0:p.x, y0:p.y, x1:p.x, y1:p.y};
         renderTextBoxUI();
         return;
       }
+      
       if(!selecting) return;
       drag={startX:p.x,startY:p.y};
       sel={x0:p.x,y0:p.y,x1:p.x,y1:p.y};
@@ -878,6 +830,7 @@ exitSelectMode():enterSelectMode(); });
         renderTextBoxUI();
         return;
       }
+      
       if(!selecting || !drag) return;
       const p=getCanvasPointFromMouseEvent(ev);
       sel.x1=p.x; sel.y1=p.y;
@@ -889,8 +842,10 @@ exitSelectMode():enterSelectMode(); });
         const y0 = Math.min(textBoxDrag.y0, textBoxDrag.y1);
         const x1 = Math.max(textBoxDrag.x0, textBoxDrag.x1);
         const y1 = Math.max(textBoxDrag.y0, textBoxDrag.y1);
+        
         const w = x1 - x0;
         const h = y1 - y0;
+        
         if(w >= 30 && h >= 30){
           const newBox = {
             x0, y0, x1, y1,
@@ -909,6 +864,7 @@ exitSelectMode():enterSelectMode(); });
         }
         return;
       }
+      
       if(!selecting || !drag) return;
       drag=null;
       const s=normalizeSel(sel);
@@ -916,10 +872,10 @@ exitSelectMode():enterSelectMode(); });
       exportBtn.disabled = !(w>=10 && h>=10);
       renderSelectUI();
     });
-    bgWhiteBtn.addEventListener("click", 
-()=>{ bgColor="#ffffff"; setBgButtons(); syncSelText(); });
-    bgBlackBtn.addEventListener("click", 
-()=>{ bgColor="#000000"; setBgButtons(); syncSelText(); });
+
+    bgWhiteBtn.addEventListener("click", ()=>{ bgColor="#ffffff"; setBgButtons(); syncSelText(); });
+    bgBlackBtn.addEventListener("click", ()=>{ bgColor="#000000"; setBgButtons(); syncSelText(); });
+
     addTextBtn.addEventListener("click", ()=>{
       textMode = !textMode;
       addTextBtn.classList.toggle("on", textMode);
@@ -932,25 +888,28 @@ exitSelectMode():enterSelectMode(); });
       }
       syncSelText();
     });
+
     function renderAllTexts(){
       const W=textCanvas.width, H=textCanvas.height;
       tctx.clearRect(0,0,W,H);
+      
       for(const box of textBoxes){
         if(!box.text) continue;
+        
         tctx.save();
         tctx.font = `${box.size*DPR}px ${box.font}`;
         tctx.fillStyle = box.color;
         tctx.textBaseline = "top";
+        
         const lines = [];
         const words = box.text;
         let currentLine = "";
         const maxWidth = (box.x1 - box.x0) - 10*DPR;
+        
         for(let i = 0; i < words.length; i++){
           const testLine = currentLine + words[i];
           const metrics = tctx.measureText(testLine);
-          if(metrics.width > maxWidth && currentLine.length 
-> 0){
-    }
+          if(metrics.width > maxWidth && currentLine.length > 0){
             lines.push(currentLine);
             currentLine = words[i];
           }else{
@@ -958,27 +917,34 @@ exitSelectMode():enterSelectMode(); });
           }
         }
         if(currentLine) lines.push(currentLine);
+        
         let yOffset = box.y0 + 5*DPR;
         const lineHeight = box.size * DPR * 1.3;
+        
         for(const line of lines){
           if(yOffset + lineHeight > box.y1) break;
           tctx.fillText(line, box.x0 + 5*DPR, yOffset);
           yOffset += lineHeight;
         }
+        
         tctx.restore();
       }
+    }
+
     function renderTextBoxUI(){
       if(!textMode) return;
+      
       const W=uiCanvas.width, H=uiCanvas.height;
+      
       for(const box of textBoxes){
         uctx.save();
         uctx.strokeStyle="rgba(100,200,255,0.5)";
         uctx.lineWidth=2;
         uctx.setLineDash([5*DPR, 5*DPR]);
-        uctx.strokeRect(box.x0, box.y0, box.x1-box.x0, 
-box.y1-box.y0);
+        uctx.strokeRect(box.x0, box.y0, box.x1-box.x0, box.y1-box.y0);
         uctx.restore();
       }
+      
       if(textBoxDrag){
         const s = textBoxDrag;
         uctx.save();
@@ -991,6 +957,7 @@ box.y1-box.y0);
         uctx.restore();
       }
     }
+
     function showTextBoxDialog(box){
       const dialog = document.createElement("div");
       dialog.style.position = "fixed";
@@ -1001,60 +968,44 @@ box.y1-box.y0);
       dialog.style.padding = "20px";
       dialog.style.borderRadius = "12px";
       dialog.style.zIndex = "10001";
-      dialog.style.border = "1px solid 
-rgba(255,255,255,0.2)";
+      dialog.style.border = "1px solid rgba(255,255,255,0.2)";
       dialog.style.minWidth = "300px";
+      
       dialog.innerHTML = `
-        <div style="color:#eee;font-size:14px;margin
-bottom:15px;">Text Box Options</div>
-        <textarea id="textBoxInput" 
-style="width:100%;height:100px;background:rgba(0,0,0,0.4);bo
-rder:1px solid rgba(255,255,255,0.15);border
-radius:8px;color:#eee;padding:10px;font-size:13px;font
-family:inherit;resize:none;margin-bottom:15px;" 
-placeholder="Enter text content...">${box.text || ""}</
-textarea>
+        <div style="color:#eee;font-size:14px;margin-bottom:15px;">Text Box Options</div>
+        <textarea id="textBoxInput" style="width:100%;height:100px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#eee;padding:10px;font-size:13px;font-family:inherit;resize:none;margin-bottom:15px;" placeholder="Enter text content...">${box.text || ""}</textarea>
         <div style="display:flex;gap:10px;">
-          <button id="textBoxMove" 
-style="flex:1;padding:8px;background:rgba(100,200,255,0.2);b
-order:1px solid rgba(100,200,255,0.4);border
-radius:8px;color:#eee;cursor:pointer;font-size:13px;">Move</
-button>
-          <button id="textBoxDelete" 
-style="flex:1;padding:8px;background:rgba(255,100,100,0.2);b
-order:1px solid rgba(255,100,100,0.4);border
-radius:8px;color:#eee;cursor:pointer;font
-size:13px;">Delete</button>
-          <button id="textBoxConfirm" 
-style="flex:1;padding:8px;background:rgba(100,255,100,0.2);b
-order:1px solid rgba(100,255,100,0.4);border
-radius:8px;color:#eee;cursor:pointer;font
-size:13px;">Confirm</button>
+          <button id="textBoxMove" style="flex:1;padding:8px;background:rgba(100,200,255,0.2);border:1px solid rgba(100,200,255,0.4);border-radius:8px;color:#eee;cursor:pointer;font-size:13px;">Move</button>
+          <button id="textBoxDelete" style="flex:1;padding:8px;background:rgba(255,100,100,0.2);border:1px solid rgba(255,100,100,0.4);border-radius:8px;color:#eee;cursor:pointer;font-size:13px;">Delete</button>
+          <button id="textBoxConfirm" style="flex:1;padding:8px;background:rgba(100,255,100,0.2);border:1px solid rgba(100,255,100,0.4);border-radius:8px;color:#eee;cursor:pointer;font-size:13px;">Confirm</button>
         </div>
       `;
+      
       document.body.appendChild(dialog);
       const input = document.getElementById("textBoxInput");
       input.focus();
-      document.getElementById("textBoxConfirm").onclick = 
-()=>{
-()=>{
-    }
+      
+      document.getElementById("textBoxConfirm").onclick = ()=>{
         box.text = input.value;
         renderAllTexts();
         document.body.removeChild(dialog);
       };
-      document.getElementById("textBoxDelete").onclick = 
+      
+      document.getElementById("textBoxDelete").onclick = ()=>{
         const idx = textBoxes.indexOf(box);
         if(idx !== -1) textBoxes.splice(idx, 1);
         renderAllTexts();
         document.body.removeChild(dialog);
         renderTextBoxUI();
       };
+      
       document.getElementById("textBoxMove").onclick = ()=>{
         movingTextBox = box;
         document.body.removeChild(dialog);
         setState("Drag text box to new position");
       };
+    }
+
     function downloadBlob(blob, filename){
       const a=document.createElement("a");
       const url=URL.createObjectURL(blob);
@@ -1068,35 +1019,38 @@ size:13px;">Confirm</button>
       if(!selecting || !sel) return;
       const s=normalizeSel(sel);
       if(!s) return;
+      
       const w=Math.max(1, Math.round(s.x1-s.x0));
       const h=Math.max(1, Math.round(s.y1-s.y0));
+      
       const scale = 2;
       const exportW = w * scale;
       const exportH = h * scale;
+      
       const off=document.createElement("canvas");
       off.width=exportW; 
       off.height=exportH;
       const octx=off.getContext("2d");
+      
       octx.imageSmoothingEnabled = true;
       octx.imageSmoothingQuality = 'high';
+      
       octx.scale(scale, scale);
+      
       octx.fillStyle=bgColor;
       octx.fillRect(0,0,w,h);
+      
       octx.drawImage(drawCanvas, s.x0,s.y0,w,h, 0,0,w,h);
       octx.drawImage(textCanvas, s.x0,s.y0,w,h, 0,0,w,h);
+      
       const ts=new Date();
-      const name=`note_${ts.getFullYear()}$
-{String(ts.getMonth()+1).padStart(2,"0")}$
-{String(ts.getDate()).padStart(2,"0")}_$
-{String(ts.getHours()).padStart(2,"0")}$
-{String(ts.getMinutes()).padStart(2,"0")}$
-{String(ts.getSeconds()).padStart(2,"0")}.png`;
-      off.toBlob((blob)=>{ if(blob) 
-downloadBlob(blob,name); }, "image/png");
+      const name=`note_${ts.getFullYear()}${String(ts.getMonth()+1).padStart(2,"0")}${String(ts.getDate()).padStart(2,"0")}_${String(ts.getHours()).padStart(2,"0")}${String(ts.getMinutes()).padStart(2,"0")}${String(ts.getSeconds()).padStart(2,"0")}.png`;
+      off.toBlob((blob)=>{ if(blob) downloadBlob(blob,name); }, "image/png");
     });
+
     clearBtn.addEventListener("click", ()=>{
-dctx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
-tctx.clearRect(0,0,textCanvas.width,textCanvas.height);
+      dctx.clearRect(0,0,drawCanvas.width,drawCanvas.height);
+      tctx.clearRect(0,0,textCanvas.width,textCanvas.height);
       textBoxes.length = 0;
       undoStack.length=0;
       resetStroke();
@@ -1109,6 +1063,7 @@ tctx.clearRect(0,0,textCanvas.width,textCanvas.height);
       prevCtrlGesture="none";
       setState("Cleared");
     });
+
     function hsvToRgb(h,s,v){
       const c=v*s;
       const x=c*(1-Math.abs((h/60)%2-1));
@@ -1120,8 +1075,7 @@ tctx.clearRect(0,0,textCanvas.width,textCanvas.height);
       else if(h<240){ r=0; g=x; b=c; }
       else if(h<300){ r=x; g=0; b=c; }
       else{ r=c; g=0; b=x; }
-      return { r:Math.round((r+m)*255), 
-g:Math.round((g+m)*255), b:Math.round((b+m)*255) };
+      return { r:Math.round((r+m)*255), g:Math.round((g+m)*255), b:Math.round((b+m)*255) };
     }
     function rgbToHex(r,g,b){
       const to = (n)=>n.toString(16).padStart(2,"0");
@@ -1129,8 +1083,7 @@ g:Math.round((g+m)*255), b:Math.round((b+m)*255) };
     }
     function hexToRgb(hex){
       const h=hex.replace("#","").trim();
-      const n=parseInt(h.length===3 ? 
-h.split("").map(x=>x+x).join("") : h, 16);
+      const n=parseInt(h.length===3 ? h.split("").map(x=>x+x).join("") : h, 16);
       return { r:(n>>16)&255, g:(n>>8)&255, b:n&255 };
     }
     function rgbToHsv(r,g,b){
@@ -1147,7 +1100,9 @@ h.split("").map(x=>x+x).join("") : h, 16);
       const v = mx;
       return { h, s, v };
     }
+
     let H=135, S=0.75, V=0.82;
+
     function renderHue(){
       const w=hCanvas.width, h=hCanvas.height;
       const img=hctx.createImageData(w,h);
@@ -1156,8 +1111,7 @@ h.split("").map(x=>x+x).join("") : h, 16);
         const rgb = hsvToRgb(hh,1,1);
         for(let y=0;y<h;y++){
           const i=(y*w+x)*4;
-          img.data[i]=rgb.r; img.data[i+1]=rgb.g; 
-img.data[i+2]=rgb.b; img.data[i+3]=255;
+          img.data[i]=rgb.r; img.data[i+1]=rgb.g; img.data[i+2]=rgb.b; img.data[i+3]=255;
         }
       }
       hctx.putImageData(img,0,0);
@@ -1170,6 +1124,7 @@ img.data[i+2]=rgb.b; img.data[i+3]=255;
       hctx.stroke();
       hctx.restore();
     }
+
     function renderSV(){
       const w=svCanvas.width, h=svCanvas.height;
       const img=svctx.createImageData(w,h);
@@ -1179,8 +1134,7 @@ img.data[i+2]=rgb.b; img.data[i+3]=255;
           const ss = x/(w-1);
           const rgb = hsvToRgb(H, ss, vv);
           const i=(y*w+x)*4;
-          img.data[i]=rgb.r; img.data[i+1]=rgb.g; 
-img.data[i+2]=rgb.b; img.data[i+3]=255;
+          img.data[i]=rgb.r; img.data[i+1]=rgb.g; img.data[i+2]=rgb.b; img.data[i+3]=255;
         }
       }
       svctx.putImageData(img,0,0);
@@ -1194,12 +1148,14 @@ img.data[i+2]=rgb.b; img.data[i+3]=255;
       svctx.stroke();
       svctx.restore();
     }
+
     function applyHSVToPen(){
       const rgb = hsvToRgb(H,S,V);
       penColor = rgbToHex(rgb.r,rgb.g,rgb.b);
       setActiveColorBtn(penColor);
       syncSelText();
     }
+
     function canvasPos(ev, c){
       const r=c.getBoundingClientRect();
       return {
@@ -1207,15 +1163,10 @@ img.data[i+2]=rgb.b; img.data[i+3]=255;
         y: (ev.clientY - r.top) * (c.height / r.height)
       };
     }
+
     let draggingSV=false, draggingH=false;
-    svCanvas.addEventListener("mousedown",
-(ev)=>{ draggingSV=true; const p=canvasPos(ev,svCanvas); 
-S=clamp(p.x/(svCanvas.width-1),0,1); V=clamp(1-p.y/
-(svCanvas.height-1),0,1); renderSV(); applyHSVToPen(); });
-    hCanvas.addEventListener("mousedown",
-(ev)=>{ draggingH=true; const p=canvasPos(ev,hCanvas); 
-H=clamp((p.x/(hCanvas.width-1))*360,0,360); renderHue(); 
-renderSV(); applyHSVToPen(); });
+    svCanvas.addEventListener("mousedown",(ev)=>{ draggingSV=true; const p=canvasPos(ev,svCanvas); S=clamp(p.x/(svCanvas.width-1),0,1); V=clamp(1-p.y/(svCanvas.height-1),0,1); renderSV(); applyHSVToPen(); });
+    hCanvas.addEventListener("mousedown",(ev)=>{ draggingH=true; const p=canvasPos(ev,hCanvas); H=clamp((p.x/(hCanvas.width-1))*360,0,360); renderHue(); renderSV(); applyHSVToPen(); });
     window.addEventListener("mousemove",(ev)=>{
       if(draggingSV){
         const p=canvasPos(ev,svCanvas);
@@ -1229,14 +1180,14 @@ renderSV(); applyHSVToPen(); });
         renderHue(); renderSV(); applyHSVToPen();
       }
     });
-    window.addEventListener("mouseup",
-()=>{ draggingSV=false; draggingH=false; });
+    window.addEventListener("mouseup",()=>{ draggingSV=false; draggingH=false; });
+
     function drawSkeleton(handLm, videoW, videoH, tf){
       if(!skeletonOn) return;
-      const pts = handLm.map(p => landmarkToCanvas(p, 
-videoW, videoH, tf));
-      const PALM_EDGES = [[0,5],[5,9],[9,13],[13,17],
-[17,0]];
+      
+      const pts = handLm.map(p => landmarkToCanvas(p, videoW, videoH, tf));
+
+      const PALM_EDGES = [[0,5],[5,9],[9,13],[13,17],[17,0]];
       const FINGER_EDGES = [
         [0,1],[1,2],[2,3],[3,4],
         [0,5],[5,6],[6,7],[7,8],
@@ -1244,12 +1195,15 @@ videoW, videoH, tf));
         [9,13],[13,14],[14,15],[15,16],
         [13,17],[17,18],[18,19],[19,20]
       ];
+
       vctx.save();
       vctx.lineCap="round";
       vctx.lineJoin="round";
+
       const palmLineW = 2.0 * DPR;
       const fingerLineW = 3.5 * DPR;
       const dotR = 5.0 * DPR;
+
       vctx.strokeStyle = "rgba(100,200,255,0.7)";
       vctx.lineWidth = palmLineW;
       vctx.beginPath();
@@ -1259,6 +1213,7 @@ videoW, videoH, tf));
         vctx.lineTo(pb.x, pb.y);
       }
       vctx.stroke();
+
       vctx.strokeStyle = "rgba(80,180,255,0.85)";
       vctx.lineWidth = fingerLineW;
       vctx.beginPath();
@@ -1268,9 +1223,9 @@ videoW, videoH, tf));
         vctx.lineTo(pb.x, pb.y);
       }
       vctx.stroke();
+
       for(const p of pts){
-        const grad = vctx.createRadialGradient(p.x, p.y, 0, 
-p.x, p.y, dotR);
+        const grad = vctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, dotR);
         grad.addColorStop(0, "rgba(150,220,255,0.95)");
         grad.addColorStop(1, "rgba(80,180,255,0.7)");
         vctx.fillStyle = grad;
@@ -1281,8 +1236,10 @@ p.x, p.y, dotR);
         vctx.lineWidth=1.5*DPR;
         vctx.stroke();
       }
+
       vctx.restore();
     }
+
     function drawPenTipDot(pt){
       if(selecting || textMode) return;
       uctx.save();
@@ -1292,48 +1249,46 @@ p.x, p.y, dotR);
       uctx.fill();
       uctx.restore();
     }
+
     async function initMediaPipe(){
       setState("Loading MediaPipe...");
-      vision = await import("https://unpkg.com/@mediapipe/
-tasks-vision@0.10.14");
+      vision = await import("https://unpkg.com/@mediapipe/tasks-vision@0.10.14");
       ({ FilesetResolver, HandLandmarker } = vision);
-      const fileset = await 
-FilesetResolver.forVisionTasks("https://unpkg.com/
-@mediapipe/tasks-vision@0.10.14/wasm");
-      handLandmarker = await 
-HandLandmarker.createFromOptions(fileset, {
-        baseOptions:{ modelAssetPath:"./
-hand_landmarker.task" },
+      const fileset = await FilesetResolver.forVisionTasks("https://unpkg.com/@mediapipe/tasks-vision@0.10.14/wasm");
+      handLandmarker = await HandLandmarker.createFromOptions(fileset, {
+        baseOptions:{ modelAssetPath:"./hand_landmarker.task" },
         runningMode:"VIDEO",
         numHands:2,
         minHandDetectionConfidence:0.5,
         minHandPresenceConfidence:0.5,
         minTrackingConfidence:0.5
       });
-    }
       setState("MediaPipe ready");
+    }
+
     async function openCamera(){
       setState("Requesting camera permission...");
       stream = await navigator.mediaDevices.getUserMedia({
-        video:{ facingMode:"user", width:{ideal:1920}, 
-height:{ideal:1080}, frameRate:{ideal:30,max:60} },
+        video:{ facingMode:"user", width:{ideal:1920}, height:{ideal:1080}, frameRate:{ideal:30,max:60} },
         audio:false
       });
       video.srcObject = stream;
       await video.play();
       setState("Running");
     }
+
     function loop(){
       resizeCanvasesToPanel();
       const W=viewCanvas.width, H=viewCanvas.height;
+
       const now = performance.now();
-      const result = handLandmarker.detectForVideo(video, 
-now);
-      const hands = (result.landmarks && 
-result.landmarks.length) ? result.landmarks : [];
+      const result = handLandmarker.detectForVideo(video, now);
+      const hands = (result.landmarks && result.landmarks.length) ? result.landmarks : [];
+
       const videoW = video.videoWidth || 1280;
       const videoH = video.videoHeight || 720;
       const tf = calcCoverTransform(videoW, videoH, W, H);
+
       vctx.save();
       vctx.clearRect(0,0,W,H);
       vctx.fillStyle="#000";
@@ -1346,10 +1301,11 @@ result.landmarks.length) ? result.landmarks : [];
         vctx.drawImage(video, tf.dx, tf.dy, tf.dw, tf.dh);
       }
       vctx.restore();
+
       if(hands.length){
-        for(const lm of hands) drawSkeleton(lm, videoW, 
-videoH, tf);
+        for(const lm of hands) drawSkeleton(lm, videoW, videoH, tf);
       }
+
       const blockGesture = selecting || textMode;
       if(!hands.length){
         if(now - lastSeenTs > HOLD_MS) resetStroke();
@@ -1357,9 +1313,7 @@ videoH, tf);
         writingSession.controlLabel=null;
         ctrlMode = CTRL.IDLE;
         prevCtrlGesture="none";
-        setState(selecting ? "Select region (gestures 
-paused)" : (textMode ? "Drag to select text area" : "No 
-hands detected"));
+        setState(selecting ? "Select region (gestures paused)" : (textMode ? "Drag to select text area" : "No hands detected"));
         renderSelectUI();
         renderTextBoxUI();
         lastSeenTs = now;
@@ -1367,60 +1321,59 @@ hands detected"));
         return;
       }
       lastSeenTs = now;
+
       if(blockGesture){
-        setState(selecting ? "Select region (gestures 
-paused)" : "Drag to select text area");
+        setState(selecting ? "Select region (gestures paused)" : "Drag to select text area");
         renderSelectUI();
         renderTextBoxUI();
         rafId=requestAnimationFrame(loop);
         return;
       }
-      const handInfo = hands.map((lm,i)=>({ lm, 
-label:getHandLabel(result,i) }));
+
+      const handInfo = hands.map((lm,i)=>({ lm, label:getHandLabel(result,i) }));
       let stateText = "Waiting for gesture";
+
       renderSelectUI();
       renderTextBoxUI();
+
       if(handInfo.length >= 2){
         if(!writingSession.active){
-          const fistIdx = handInfo.findIndex(h => 
-isFist(h.lm));
+          const fistIdx = handInfo.findIndex(h => isFist(h.lm));
           if(fistIdx !== -1){
             writingSession.active=true;
-            writingSession.controlLabel = 
-handInfo[fistIdx].label;
+            writingSession.controlLabel = handInfo[fistIdx].label;
             ctrlMode = CTRL.WRITING;
             prevCtrlGesture="fist";
             resetStroke();
           }else{
-          }
             ctrlMode = CTRL.IDLE;
+          }
         }
+
         const controlIdx = pickControlIndex(handInfo);
         const writeIdx = (controlIdx === 0) ? 1 : 0;
         const controlLm = handInfo[controlIdx].lm;
         const writeLm = handInfo[writeIdx].lm;
+
         const g = ctrlGesture(controlLm);
-        const p8 = landmarkToCanvas(writeLm[8], videoW, 
-videoH, tf);
-        const p12 = landmarkToCanvas(writeLm[12], videoW, 
-videoH, tf);
-        const mid = { x:(p8.x+p12.x)*0.5, y:
-(p8.y+p12.y)*0.5 };
+
+        const p8 = landmarkToCanvas(writeLm[8], videoW, videoH, tf);
+        const p12 = landmarkToCanvas(writeLm[12], videoW, videoH, tf);
+        const mid = { x:(p8.x+p12.x)*0.5, y:(p8.y+p12.y)*0.5 };
+
         if(ctrlMode === CTRL.WRITING){
           if(g === "index" || g === "indexmiddle"){
             ctrlMode = CTRL.PAUSED;
             prevCtrlGesture = g;
             resetStroke();
-            stateText = (g==="indexmiddle") ? "Paused 
-(index+middle)" : "Paused (index)";
+            stateText = (g==="indexmiddle") ? "Paused (index+middle)" : "Paused (index)";
             drawPenTipDot(mid);
           }else if(g === "fist"){
             if(prevPt){
               const dd = Math.hypot(mid.x - prevPt.x, mid.y - prevPt.y);
               if(dd < DEBOUNCE_PX * DPR){
                 drawPenTipDot(mid);
-                stateText = `Writing (ctrl=${controlIdx+1}, 
-write=${writeIdx+1})`;
+                stateText = `Writing (ctrl=${controlIdx+1}, write=${writeIdx+1})`;
                 prevCtrlGesture = g;
                 setState(stateText);
                 syncSelText();
@@ -1428,15 +1381,16 @@ write=${writeIdx+1})`;
                 return;
               }
             }
+
             if(!prevPt){
               addStrokePoint(mid, penW, penColor);
             }else{
-              addStrokePointResampled(prevPt, mid, penW, 
-penColor);
+              addStrokePointResampled(prevPt, mid, penW, penColor);
             }
+
             drawPenTipDot(mid);
-            stateText = `Writing (ctrl=${controlIdx+1}, 
-write=${writeIdx+1})`;
+
+            stateText = `Writing (ctrl=${controlIdx+1}, write=${writeIdx+1})`;
             prevCtrlGesture = g;
           }else{
             resetStroke();
@@ -1447,9 +1401,8 @@ write=${writeIdx+1})`;
         else if(ctrlMode === CTRL.PAUSED){
           resetStroke();
           drawPenTipDot(mid);
-          const undoEdge = (prevCtrlGesture !== 
-"indexmiddle" && g === "indexmiddle" && (now - lastUndoTs) > 
-UNDO_COOLDOWN_MS);
+
+          const undoEdge = (prevCtrlGesture !== "indexmiddle" && g === "indexmiddle" && (now - lastUndoTs) > UNDO_COOLDOWN_MS);
           if(undoEdge){
             lastUndoTs = now;
             doUndo();
@@ -1462,13 +1415,13 @@ UNDO_COOLDOWN_MS);
             stateText = "Waiting (resume detection)";
           }else{
             prevCtrlGesture = g;
-            stateText = (g==="index") ? "Paused (index)" : 
-(g==="indexmiddle" ? "Paused (index+middle)" : "Paused");
+            stateText = (g==="index") ? "Paused (index)" : (g==="indexmiddle" ? "Paused (index+middle)" : "Paused");
           }
         }
         else if(ctrlMode === CTRL.RESUME_DELAY){
           resetStroke();
           drawPenTipDot(mid);
+
           const dt = now - resumeStartTs;
           if(dt >= RESUME_DELAY_MS && g === "fist"){
             ctrlMode = CTRL.WRITING;
@@ -1493,25 +1446,27 @@ UNDO_COOLDOWN_MS);
         writingSession.controlLabel=null;
         ctrlMode = CTRL.IDLE;
         prevCtrlGesture="none";
+
         const lm = handInfo[0].lm;
         if(isIndexMiddleOnly(lm)){
-          const tip = landmarkToCanvas(lm[8], videoW, 
-videoH, tf);
+          const tip = landmarkToCanvas(lm[8], videoW, videoH, tf);
           stateText = "Eraser (single hand: index+middle)";
+
           if(prevPt){
-            const dd = Math.hypot(tip.x - prevPt.x, tip.y - 
-prevPt.y);
-          }
+            const dd = Math.hypot(tip.x - prevPt.x, tip.y - prevPt.y);
             if(dd < DEBOUNCE_PX * DPR){
               setState(stateText);
               syncSelText();
               rafId=requestAnimationFrame(loop);
               return;
             }
+          }
+
           if(!prevPt){
             pushUndoSnapshot();
             prevPt = {x:tip.x,y:tip.y};
           }
+
           const dx=tip.x-prevPt.x, dy=tip.y-prevPt.y;
           const dist=Math.hypot(dx,dy);
           const n=Math.max(1, Math.floor(dist/INTERP_STEP));
@@ -1525,44 +1480,44 @@ prevPt.y);
           resetStroke();
         }
       }
+
       setState(stateText);
       syncSelText();
       rafId=requestAnimationFrame(loop);
     }
+
     async function main(){
       try{
         loadDraft();
+        
         penColor = "#30d158";
         setActiveColorBtn(penColor);
         setActiveTextColorBtn(textColor);
         const rgb = hexToRgb(penColor);
         const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
         H=hsv.h; S=hsv.s; V=hsv.v;
-        renderHue(); renderSV(); setBgButtons(); 
-syncSelText();
+        renderHue(); renderSV(); setBgButtons(); syncSelText();
+
         await initMediaPipe();
         await openCamera();
         loop();
       }catch(e){
         console.error(e);
         const msg=String(e).toLowerCase();
-        if(msg.includes("permission") || 
-msg.includes("denied")) setState("Camera permission denied 
-(allow in address bar camera settings)");
-        else if(msg.includes("hand_landmarker.task")) 
-setState("Model load failed (ensure hand_landmarker.task is 
-in same directory as index.html)");
-        else setState("Init failed (network/CDN/WASM, check 
-console for first error)");
+        if(msg.includes("permission") || msg.includes("denied")) setState("Camera permission denied (allow in address bar camera settings)");
+        else if(msg.includes("hand_landmarker.task")) setState("Model load failed (ensure hand_landmarker.task is in same directory as index.html)");
+        else setState("Init failed (network/CDN/WASM, check console for first error)");
       }
     }
+
     window.addEventListener("beforeunload", ()=>{
       if(rafId) cancelAnimationFrame(rafId);
       if(stream) stream.getTracks().forEach(t=>t.stop());
     });
-    window.addEventListener("resize", 
-()=>{ resizeCanvasesToPanel(); });
+    window.addEventListener("resize", ()=>{ resizeCanvasesToPanel(); });
+
     main();
   </script>
 </body>
 </html>
+
